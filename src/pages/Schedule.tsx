@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { format, addDays, isSameDay, isToday, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, getMonth, getYear } from 'date-fns';
+import { format, addDays, isSameDay, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, getYear } from 'date-fns';
 import { Bell, BookOpen, Check, ChevronLeft, ChevronRight, CircleAlert, CircleX, Clock, Plus, Trash2 } from 'lucide-react';
 import PageContainer from '../components/PageContainer';
 import { updateTodayMedications } from '../data/mockData';
 import ReminderModal from '../components/ReminderModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EnhancedCalendarViews from '../components/EnhancedCalendarViews';
 
 interface Medication {
   id: number;
@@ -18,6 +19,10 @@ interface Medication {
   skipped?: boolean;
   missed?: boolean;
   skipReason?: string;
+  type?: 'tablet' | 'capsule' | 'liquid' | 'injection' | string;
+  withFood?: boolean;
+
+
 }
 
 interface Note {
@@ -56,10 +61,8 @@ const Schedule = () => {
   const [noteText, setNoteText] = useState('');
   const [noteTitle, setNoteTitle] = useState('');
   const [noteCategory, setNoteCategory] = useState('General');
-  const [dateNote, setDateNote] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
-  const monthScrollRef = useRef<HTMLDivElement>(null);
   const [newMedication, setNewMedication] = useState<Partial<Medication>>({
     name: '',
     dosage: '',
@@ -198,17 +201,6 @@ const Schedule = () => {
     localStorage.setItem('reminders', JSON.stringify(reminders));
   }, [reminders]);
   
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const date = addDays(currentWeekStart, i);
-    return {
-      date,
-      dayName: format(date, 'EEE'),
-      dayNumber: format(date, 'd'),
-      isToday: isSameDay(date, new Date()),
-      isSelected: isSameDay(date, selectedDate),
-      hasNote: dateNote === format(date, 'yyyy-MM-dd')
-    };
-  });
   
   const nextWeek = () => {
     const nextWeekStart = addDays(currentWeekStart, 7);
@@ -390,7 +382,6 @@ const Schedule = () => {
         };
         
         setNotes([...notes, newNote]);
-        setDateNote(format(selectedDate, 'yyyy-MM-dd'));
         
         toast.success('Note added successfully!', {
           position: "bottom-right",
@@ -519,156 +510,23 @@ const Schedule = () => {
         onTouchCancel={handleTouchEndLongPress}
       >
         {/* View Mode Toggle and Month Selection */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={() => setViewMode('week')}
-              className={`px-3 py-1 rounded-lg text-sm ${viewMode === 'week' ? 'bg-primary text-white' : 'bg-gray-100'}`}
-            >
-              Week
-            </button>
-            <button 
-              onClick={() => setViewMode('month')}
-              className={`px-3 py-1 rounded-lg text-sm ${viewMode === 'month' ? 'bg-primary text-white' : 'bg-gray-100'}`}
-            >
-              Month
-            </button>
-          </div>
-          
-          {viewMode === 'month' && (
-            <select 
-              className="input py-1 px-3 text-sm"
-              value={`${getYear(currentMonth)}-${getMonth(currentMonth)}`}
-              onChange={changeMonth}
-            >
-              {getMonthOptions().map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        
-        {/* Week View */}
-        {viewMode === 'week' && (
-          <>
-            <div className="flex items-center justify-between mb-4">
-              <button 
-                onClick={previousWeek}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              
-              <div className="text-sm font-medium">
-                {format(currentWeekStart, 'MMM d')} - {format(addDays(currentWeekStart, 6), 'MMM d, yyyy')}
-              </div>
-              
-              <button 
-                onClick={nextWeek}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-7 gap-1">
-              {weekDays.map((day, index) => (
-                <button
-                  key={index}
-                  className={`flex flex-col items-center py-2 rounded-xl transition-colors relative ${
-                    day.isSelected ? 'bg-primary text-white' : day.isToday ? 'bg-primary-light' : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => selectDay(day.date)}
-                >
-                  <div className="text-xs font-medium">{day.dayName}</div>
-                  <div className={`text-lg font-bold ${day.isSelected ? 'text-white' : ''}`}>{day.dayNumber}</div>
-                  {day.hasNote && (
-                    <div className={`absolute bottom-1 w-2 h-2 rounded-full ${day.isSelected ? 'bg-white' : 'bg-primary'}`}></div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-        
-        {/* Month View */}
-        {viewMode === 'month' && (
-          <>
-            <div className="flex items-center justify-between mb-4">
-              <button 
-                onClick={previousMonth}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              
-              <div className="text-sm font-medium">
-                {format(currentMonth, 'MMMM yyyy')}
-              </div>
-              
-              <button 
-                onClick={nextMonth}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-            
-            {/* Horizontal Month Scroll */}
-            <div className="overflow-x-auto -mx-4 px-4 pb-2" ref={monthScrollRef}>
-              <div className="flex space-x-2 w-max min-w-full">
-                {getDaysInMonth().map((date, index) => {
-                  const dayNotes = notes.filter(note => isSameDay(new Date(note.date), date));
-                  const isCurrentDay = isSameDay(date, selectedDate);
-                  const isTodayDate = isToday(date);
-                  
-                  return (
-                    <div key={index} className="min-w-[70px] relative group">
-                      <button
-                        className={`flex flex-col items-center p-2 rounded-xl transition-colors relative w-full ${
-                          isCurrentDay ? 'bg-primary text-white' : isTodayDate ? 'bg-primary-light' : 'hover:bg-gray-100'
-                        }`}
-                        onClick={() => selectDay(date)}
-                      >
-                        <div className="text-xs font-medium">{format(date, 'EEE')}</div>
-                        <div className={`text-lg font-bold ${isCurrentDay ? 'text-white' : ''}`}>{format(date, 'd')}</div>
-                        {dayNotes.length > 0 && (
-                          <div className="flex space-x-1 mt-1">
-                            {dayNotes.length > 3 ? (
-                              <div className={`text-xs ${isCurrentDay ? 'text-white' : 'text-primary'}`}>{dayNotes.length} notes</div>
-                            ) : (
-                              dayNotes.slice(0, 3).map((note, i) => (
-                                <div 
-                                  key={i} 
-                                  className="w-2 h-2 rounded-full" 
-                                  style={{ backgroundColor: note.color.replace('bg-', '').includes('primary') ? 'var(--color-primary)' : '' }}
-                                ></div>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </button>
-                      
-                      {/* Add Note Button (appears on hover) */}
-                      <button 
-                        className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white rounded-full w-5 h-5 shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openAddNoteForDate(date);
-                        }}
-                        title="Add note"
-                      >
-                        <Plus size={12} className="text-primary" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        )}
+        <EnhancedCalendarViews
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          selectedDate={selectedDate}
+          selectDay={selectDay}
+          currentWeekStart={currentWeekStart}
+          currentMonth={currentMonth}
+          previousWeek={previousWeek}
+          nextWeek={nextWeek}
+          previousMonth={previousMonth}
+          nextMonth={nextMonth}
+          changeMonth={changeMonth}
+          getMonthOptions={getMonthOptions}
+          getDaysInMonth={getDaysInMonth}
+          notes={notes}
+          openAddNoteForDate={openAddNoteForDate}
+        />
       </div>
       
       <div className="mb-4 overflow-x-auto -mx-4 px-4">
@@ -882,101 +740,268 @@ const Schedule = () => {
       )}
       
       {Object.entries(medicationsByPeriod).map(([period, meds]) => (
-        meds.length > 0 && (
-          <div key={period} className={`mb-6 ${
-            period === 'Morning' ? 'period-morning' : 
-            period === 'Afternoon' ? 'period-afternoon' : 'period-evening'
-          } rounded-lg overflow-hidden`}>
-            <div className="p-3 flex items-center bg-white/90 border-b border-gray-100">
-              <div className="mr-2">
-                {period === 'Morning' && (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 3V4M12 20V21M4 12H3M5.5 5.5L6.5 6.5M18.5 5.5L17.5 6.5M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="#ED8936" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-                {period === 'Afternoon' && (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 9H16M8 13H10M8 17H14M18 7L18 5M16 5H20M20 19V7C20 5.89543 19.1046 5 18 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19Z" stroke="#4299E1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-                {period === 'Evening' && (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21.4 13.7001C20.6 13.9001 19.8 14.0001 19 14.0001C15.1 14.0001 12 10.9001 12 7.00006C12 5.40006 12.5 3.90006 13.3 2.70006C13.1 2.70006 12.9 2.70006 12.7 2.70006C7.5 2.60006 3.1 6.80006 3 12.0001C2.9 17.2001 7.1 21.6001 12.3 21.7001C16 21.7001 19.1 19.5001 20.6 16.4001C20.9 15.7001 21.1 14.9001 21.3 14.1001C21.3 14.0001 21.4 13.8001 21.4 13.7001Z" stroke="#4C51BF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-              </div>
-              <h2 className="font-medium">{period}</h2>
-            </div>
-            <div className="p-2">
-              {meds.map((med, index) => (
-                <div 
-                  key={index}
-                  className="bg-white rounded-lg p-3 mb-2 last:mb-0"
-                  onTouchStart={() => handleTouchStartLongPress(med)}
-                  onTouchEnd={handleTouchEndLongPress}
-                  onTouchCancel={handleTouchEndLongPress}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-medium">{med.name} {med.dosage}</h3>
-                      <p className="text-sm text-gray-500">{med.instruction}</p>
-                      <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
-                        <Clock size={12} />
-                        <span>{med.time}</span>
-                      </div>
-                    </div>
-                    <div className="pill-indicator">
-                      {med.taken && <div className="text-success">Taken</div>}
-                      {med.missed && <div className="text-danger">Missed</div>}
-                      {med.skipped && (
-                        <div className="text-warning flex items-center gap-1">
-                          <span>Skipped</span>
-                          {med.skipReason && (
-                            <span className="text-xs underline cursor-help" title={med.skipReason}>
-                              (?)
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      {!med.taken && !med.missed && !med.skipped && <div className="text-gray-400">Pending</div>}
-                    </div>
+  meds.length > 0 && (
+    <div key={period} className={`mb-6 rounded-xl shadow-lg overflow-hidden border-2 ${
+      period === 'Morning' ? 'border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50' : 
+      period === 'Afternoon' ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 
+      'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50'
+    }`}>
+      {/* Enhanced Period Header */}
+      <div className={`p-4 flex items-center justify-between ${
+        period === 'Morning' ? 'bg-gradient-to-r from-orange-400 to-yellow-400' : 
+        period === 'Afternoon' ? 'bg-gradient-to-r from-blue-400 to-cyan-400' : 
+        'bg-gradient-to-r from-indigo-500 to-purple-500'
+      }`}>
+        <div className="flex items-center">
+          <div className="mr-3 p-2 bg-white/20 rounded-full">
+            {period === 'Morning' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3V4M12 20V21M4 12H3M5.5 5.5L6.5 6.5M18.5 5.5L17.5 6.5M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+            {period === 'Afternoon' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3C12 3 8 6 8 12C8 18 12 21 12 21C12 21 16 18 16 12C16 6 12 3 12 3Z" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+              </svg>
+            )}
+            {period === 'Evening' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21.4 13.7001C20.6 13.9001 19.8 14.0001 19 14.0001C15.1 14.0001 12 10.9001 12 7.00006C12 5.40006 12.5 3.90006 13.3 2.70006C13.1 2.70006 12.9 2.70006 12.7 2.70006C7.5 2.60006 3.1 6.80006 3 12.0001C2.9 17.2001 7.1 21.6001 12.3 21.7001C16 21.7001 19.1 19.5001 20.6 16.4001C20.9 15.7001 21.1 14.9001 21.3 14.1001C21.3 14.0001 21.4 13.8001 21.4 13.7001Z" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </div>
+          <div>
+            <h2 className="font-bold text-white text-lg">{period}</h2>
+            <p className="text-white/80 text-sm">
+              {period === 'Morning' && '6:00 AM - 12:00 PM'}
+              {period === 'Afternoon' && '12:00 PM - 6:00 PM'}
+              {period === 'Evening' && '6:00 PM - 12:00 AM'}
+            </p>
+          </div>
+        </div>
+        <div className="text-white/90 text-sm font-medium">
+          {meds.filter(med => med.taken).length}/{meds.length} taken
+        </div>
+      </div>
+
+      {/* Medications List */}
+      <div className="p-3 space-y-3">
+        {meds.map((med, index) => (
+          <div 
+            key={index}
+            className={`bg-white rounded-xl p-4 shadow-md border-l-4 transition-all duration-200 hover:shadow-lg ${
+              med.taken ? 'border-l-green-500 bg-green-50/50' :
+              med.missed ? 'border-l-red-500 bg-red-50/50' :
+              med.skipped ? 'border-l-yellow-500 bg-yellow-50/50' :
+              'border-l-gray-300 hover:border-l-blue-400'
+            }`}
+            onTouchStart={() => handleTouchStartLongPress(med)}
+            onTouchEnd={handleTouchEndLongPress}
+            onTouchCancel={handleTouchEndLongPress}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  {/* Medication Icon */}
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    med.type === 'tablet' ? 'bg-blue-100' :
+                    med.type === 'capsule' ? 'bg-green-100' :
+                    med.type === 'liquid' ? 'bg-purple-100' :
+                    med.type === 'injection' ? 'bg-red-100' :
+                    'bg-gray-100'
+                  }`}>
+                    {/* Tablet Icon */}
+                    {(med.type === 'tablet' || !med.type) && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="12" cy="12" rx="8" ry="6" fill="#3B82F6" stroke="#1E40AF" strokeWidth="2"/>
+                        <line x1="12" y1="6" x2="12" y2="18" stroke="#1E40AF" strokeWidth="1"/>
+                      </svg>
+                    )}
+                    {/* Capsule Icon */}
+                    {med.type === 'capsule' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="8" y="6" width="8" height="12" rx="4" fill="#10B981" stroke="#059669" strokeWidth="2"/>
+                        <rect x="8" y="6" width="8" height="6" fill="#34D399"/>
+                      </svg>
+                    )}
+                    {/* Liquid Icon */}
+                    {med.type === 'liquid' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 3V6H17V3H7Z" fill="#8B5CF6" stroke="#7C3AED" strokeWidth="2"/>
+                        <path d="M7 6H17V18C17 19.1046 16.1046 20 15 20H9C7.89543 20 7 19.1046 7 18V6Z" fill="#A78BFA" stroke="#7C3AED" strokeWidth="2"/>
+                        <circle cx="12" cy="13" r="2" fill="#8B5CF6"/>
+                      </svg>
+                    )}
+                    {/* Injection Icon */}
+                    {med.type === 'injection' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 3L21 7L19 9L15 5L17 3Z" fill="#EF4444" stroke="#DC2626" strokeWidth="2"/>
+                        <path d="M15 5L3 17V21H7L19 9L15 5Z" fill="#FCA5A5" stroke="#DC2626" strokeWidth="2"/>
+                      </svg>
+                    )}
                   </div>
                   
-                  <div className="flex gap-2">
-                    <button 
-                      className={`flex-1 py-1 px-2 rounded-lg border text-xs font-medium flex justify-center items-center gap-1
-                        ${med.taken ? 'bg-success text-white border-success' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}
-                      onClick={() => handleStatusChange(med, 'taken')}
-                    >
-                      <Check size={12} /> Taken
-                    </button>
-                    <button 
-                      className={`flex-1 py-1 px-2 rounded-lg border text-xs font-medium flex justify-center items-center gap-1
-                        ${med.missed ? 'bg-danger text-white border-danger' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}
-                      onClick={() => handleStatusChange(med, 'missed')}
-                    >
-                      <CircleX size={12} /> Missed
-                    </button>
-                    <button 
-                      className={`flex-1 py-1 px-2 rounded-lg border text-xs font-medium flex justify-center items-center gap-1
-                        ${med.skipped ? 'bg-warning text-white border-warning' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}
-                      onClick={() => handleStatusChange(med, 'skipped')}
-                    >
-                      <CircleAlert size={12} /> Skip
-                    </button>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-800 text-lg">{med.name}</h3>
+                    <p className="text-blue-600 font-semibold">{med.dosage}</p>
+                    <p className="text-gray-600 text-sm mt-1">{med.instruction}</p>
                   </div>
-                  
-                  {med.skipReason && (
-                    <div className="mt-2 text-xs text-gray-600 bg-yellow-50 p-2 rounded-lg border border-yellow-100">
-                      <strong>Skip Reason:</strong> {med.skipReason}
+                </div>
+                
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1 text-gray-500">
+                    <Clock size={14} />
+                    <span className="font-medium">{med.time}</span>
+                  </div>
+                  {med.withFood && (
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" fill="currentColor"/>
+                      </svg>
+                      <span className="text-xs font-medium">With food</span>
                     </div>
                   )}
                 </div>
-              ))}
+              </div>
+              
+              {/* Status Indicator */}
+              <div className="ml-4">
+                {med.taken && (
+                  <div className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Taken
+                  </div>
+                )}
+                {med.missed && (
+                  <div className="flex items-center gap-2 bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    Missed
+                  </div>
+                )}
+                {med.skipped && (
+                  <div className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>Skipped</span>
+                    {med.skipReason && (
+                      <span className="text-xs underline cursor-help" title={med.skipReason}>
+                        (?)
+                      </span>
+                    )}
+                  </div>
+                )}
+                {!med.taken && !med.missed && !med.skipped && (
+                  <div className="flex items-center gap-2 bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                    Pending
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-2 mt-4">
+              <button 
+                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                  med.taken 
+                    ? 'bg-green-500 text-white border-green-500 shadow-lg shadow-green-200' 
+                    : 'bg-white text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300 hover:shadow-md'
+                }`}
+                onClick={() => handleStatusChange(med, 'taken')}
+              >
+                <Check size={16} strokeWidth={2.5} />
+                Taken
+              </button>
+              
+              <button 
+                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                  med.missed 
+                    ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-200' 
+                    : 'bg-white text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 hover:shadow-md'
+                }`}
+                onClick={() => handleStatusChange(med, 'missed')}
+              >
+                <CircleX size={16} strokeWidth={2.5} />
+                Missed
+              </button>
+              
+              <button 
+                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                  med.skipped 
+                    ? 'bg-yellow-500 text-white border-yellow-500 shadow-lg shadow-yellow-200' 
+                    : 'bg-white text-yellow-600 border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md'
+                }`}
+                onClick={() => handleStatusChange(med, 'skipped')}
+              >
+                <CircleAlert size={16} strokeWidth={2.5} />
+                Skip
+              </button>
+            </div>
+            
+            {/* Skip Reason Display */}
+            {med.skipReason && (
+              <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-yellow-600 mt-0.5 flex-shrink-0">
+                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <div>
+                    <p className="text-yellow-800 font-medium text-sm">Skip Reason:</p>
+                    <p className="text-yellow-700 text-sm">{med.skipReason}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Progress Indicator */}
+            {med.taken && (
+              <div className="mt-3 flex items-center gap-2 text-green-600">
+                <div className="flex-1 bg-green-100 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full w-full transition-all duration-500"></div>
+                </div>
+                <span className="text-xs font-medium">Completed</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      {/* Period Summary */}
+      <div className={`p-3 border-t ${
+        period === 'Morning' ? 'bg-orange-50 border-orange-100' : 
+        period === 'Afternoon' ? 'bg-blue-50 border-blue-100' : 
+        'bg-indigo-50 border-indigo-100'
+      }`}>
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-4">
+            <span className="text-gray-600">
+              Progress: <span className="font-semibold">{meds.filter(med => med.taken).length}/{meds.length}</span>
+            </span>
+            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+              meds.every(med => med.taken) ? 'bg-green-100 text-green-700' :
+              meds.some(med => med.missed) ? 'bg-red-100 text-red-700' :
+              'bg-yellow-100 text-yellow-700'
+            }`}>
+              {meds.every(med => med.taken) ? 'Complete' :
+               meds.some(med => med.missed) ? 'Needs attention' :
+               'In progress'}
             </div>
           </div>
-        )
-      ))}
+          <div className="w-16 bg-gray-200 rounded-full h-2">
+            <div 
+              className={`h-2 rounded-full transition-all duration-500 ${
+                period === 'Morning' ? 'bg-orange-400' : 
+                period === 'Afternoon' ? 'bg-blue-400' : 
+                'bg-indigo-400'
+              }`}
+              style={{ width: `${(meds.filter(med => med.taken).length / meds.length) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+))}
       
       {/* Add Medication Modal */}
       {showAddMedication && (
