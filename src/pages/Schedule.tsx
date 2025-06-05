@@ -488,7 +488,7 @@ const Schedule = () => {
       actionButton={
         <div className="flex gap-2">
           <button 
-            className="btn btn-secondary text-sm pulse-shadow" 
+            className="btn btn-secondary text-sm pulse-shadow hidden sm:flex" 
             onClick={() => setShowReminderModal(true)}
           >
             <Bell size={16} />
@@ -496,7 +496,8 @@ const Schedule = () => {
           </button>
           <button className="btn btn-primary text-sm" onClick={() => setShowAddMedication(true)}>
             <Plus size={16} />
-            <span>Add Medication</span>
+            <span className="hidden sm:inline">Add Medication</span>
+            <span className="sm:hidden">Add</span>
           </button>
         </div>
       }
@@ -504,7 +505,7 @@ const Schedule = () => {
       <ToastContainer />
       <div 
         ref={contentRef}
-        className="mb-6"
+        className="mb-4 sm:mb-6"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={handleTouchEndLongPress}
@@ -529,33 +530,36 @@ const Schedule = () => {
         />
       </div>
       
-      <div className="mb-4 overflow-x-auto -mx-4 px-4">
-        <div className="flex space-x-2 w-max min-w-full">
+      <div className="mb-4 overflow-x-auto -mx-2 sm:-mx-4 px-2 sm:px-4">
+        <div className="flex space-x-1 sm:space-x-2 w-max min-w-full">
           <button
-            className={`tab flex items-center gap-1 ${activeTab === 'schedule' ? 'tab-active' : ''}`}
+            className={`tab flex items-center gap-1 text-sm sm:text-base ${activeTab === 'schedule' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('schedule')}
           >
             <Clock size={16} />
-            <span>Today's Schedule</span>
+            <span className="hidden sm:inline">Today's Schedule</span>
+            <span className="sm:hidden">Schedule</span>
           </button>
           
           <button
-            className={`tab flex items-center gap-1 ${activeTab === 'notes' ? 'tab-active' : ''} relative`}
+            className={`tab flex items-center gap-1 text-sm sm:text-base ${activeTab === 'notes' ? 'tab-active' : ''} relative`}
             onClick={() => setActiveTab('notes')}
           >
             <BookOpen size={16} />
-            <span>Notes & Journal</span>
+            <span className="hidden sm:inline">Notes & Journal</span>
+            <span className="sm:hidden">Notes</span>
             {filteredNotes.length > 0 && (
               <div className="notification-badge">{filteredNotes.length}</div>
             )}
           </button>
           
           <button
-            className={`tab flex items-center gap-1 ${activeTab === 'reminders' ? 'tab-active' : ''} relative`}
+            className={`tab flex items-center gap-1 text-sm sm:text-base ${activeTab === 'reminders' ? 'tab-active' : ''} relative`}
             onClick={() => setActiveTab('reminders')}
           >
             <Bell size={16} />
-            <span>Reminders</span>
+            <span className="hidden sm:inline">Reminders</span>
+            <span className="sm:hidden">Remind</span>
             {todayReminders.length > 0 && (
               <div className="notification-badge">{todayReminders.length}</div>
             )}
@@ -564,47 +568,48 @@ const Schedule = () => {
       </div>
       
       {activeTab === 'notes' && (
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-medium">Notes for {format(selectedDate, 'MMM d, yyyy')}</h2>
+            <h2 className="text-base sm:text-lg font-medium">Notes for {format(selectedDate, 'MMM d, yyyy')}</h2>
             <button 
               onClick={openAddNote} 
               className="btn btn-primary text-sm"
             >
               <Plus size={16} />
-              <span>Add Note</span>
+              <span className="hidden sm:inline">Add Note</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
           
           {filteredNotes.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {/* Note preview bubbles */}
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="flex flex-wrap gap-1 sm:gap-2 mb-2">
                 {filteredNotes.map(note => (
                   <div 
                     key={`bubble-${note.id}`}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 ${note.color === 'bg-primary' ? 'bg-primary/10 text-primary' : note.color.replace('bg-', 'bg-') + '/10 text-' + note.color.replace('bg-', '')}`}
+                    className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-medium flex items-center gap-1 ${note.color === 'bg-primary' ? 'bg-primary/10 text-primary' : note.color.replace('bg-', 'bg-') + '/10 text-' + note.color.replace('bg-', '')}`}
                     onClick={() => editNote(note)}
                   >
-                    <span className={`w-2 h-2 rounded-full ${note.color}`}></span>
+                    <span className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${note.color}`}></span>
                     <span>{note.title}</span>
                   </div>
                 ))}
               </div>
               
               {/* Note cards */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {filteredNotes.map(note => (
                   <div 
                     key={note.id} 
-                    className="card p-4 hover:shadow-md transition-all duration-300 border-l-4"
+                    className="card p-3 sm:p-4 hover:shadow-md transition-all duration-300 border-l-4"
                     style={{ borderLeftColor: note.color.replace('bg-', '').includes('primary') ? 'var(--color-primary)' : '' }}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{note.title}</h3>
-                          <span className={`px-2 py-0.5 rounded-full text-xs ${note.color === 'bg-primary' ? 'bg-primary/10 text-primary' : note.color.replace('bg-', 'bg-') + '/10 text-' + note.color.replace('bg-', '')}`}>
+                          <h3 className="font-medium text-sm sm:text-base">{note.title}</h3>
+                          <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${note.color === 'bg-primary' ? 'bg-primary/10 text-primary' : note.color.replace('bg-', 'bg-') + '/10 text-' + note.color.replace('bg-', '')}`}>
                             {note.category}
                           </span>
                         </div>
@@ -620,17 +625,17 @@ const Schedule = () => {
                       <div className="flex gap-1">
                         <button 
                           onClick={() => editNote(note)}
-                          className="p-1.5 rounded-full hover:bg-gray-100"
+                          className="p-1 sm:p-1.5 rounded-full hover:bg-gray-100"
                           title="Edit note"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
                         <button 
                           onClick={() => handleDeleteNote(note.id)}
-                          className="p-1.5 rounded-full hover:bg-gray-100 text-red-500"
+                          className="p-1 sm:p-1.5 rounded-full hover:bg-gray-100 text-red-500"
                           title="Delete note"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
@@ -651,16 +656,16 @@ const Schedule = () => {
               </div>
             </div>
           ) : (
-            <div className="card p-6 flex flex-col items-center justify-center text-center animate-fadeIn">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-2">
-                <BookOpen size={24} className="text-gray-400" />
+            <div className="card p-4 sm:p-6 flex flex-col items-center justify-center text-center animate-fadeIn">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center mb-2">
+                <BookOpen size={20} className="text-gray-400" />
               </div>
-              <p className="text-gray-500 mb-2">No notes for this day</p>
+              <p className="text-sm sm:text-base text-gray-500 mb-2">No notes for this day</p>
               <button 
                 onClick={openAddNote} 
-                className="text-primary font-medium flex items-center gap-1 hover:underline"
+                className="text-primary font-medium flex items-center gap-1 hover:underline text-sm sm:text-base"
               >
-                <Plus size={16} />
+                <Plus size={14} />
                 <span>Add a note</span>
               </button>
             </div>
@@ -669,15 +674,16 @@ const Schedule = () => {
       )}
       
       {activeTab === 'reminders' && (
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-medium">Reminders for {format(selectedDate, 'MMM d, yyyy')}</h2>
+            <h2 className="text-base sm:text-lg font-medium">Reminders for {format(selectedDate, 'MMM d, yyyy')}</h2>
             <button 
               onClick={() => setShowReminderModal(true)} 
               className="btn btn-primary text-sm"
             >
               <Plus size={16} />
-              <span>Add Reminder</span>
+              <span className="hidden sm:inline">Add Reminder</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
           
@@ -686,35 +692,35 @@ const Schedule = () => {
               {todayReminders.map(reminder => (
                 <div 
                   key={reminder.id} 
-                  className={`card p-4 border-l-4 ${reminder.isCompleted ? 'border-green-500 bg-green-50' : 'border-primary'} transition-all duration-300 hover:shadow-md`}
+                  className={`card p-3 sm:p-4 border-l-4 ${reminder.isCompleted ? 'border-green-500 bg-green-50' : 'border-primary'} transition-all duration-300 hover:shadow-md`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <div className="flex items-center">
-                        <h3 className={`font-medium ${reminder.isCompleted ? 'line-through text-gray-500' : ''}`}>{reminder.title}</h3>
-                        <div className="ml-2 flex items-center">
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{reminder.time}</span>
+                      <div className="flex items-center flex-wrap gap-2">
+                        <h3 className={`font-medium text-sm sm:text-base ${reminder.isCompleted ? 'line-through text-gray-500' : ''}`}>{reminder.title}</h3>
+                        <div className="flex items-center flex-wrap gap-1">
+                          <span className="text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{reminder.time}</span>
                           {reminder.repeat !== 'never' && (
-                            <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">{reminder.repeat}</span>
+                            <span className="text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">{reminder.repeat}</span>
                           )}
                         </div>
                       </div>
                       {reminder.description && (
-                        <p className="text-sm text-gray-600 mt-1">{reminder.description}</p>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">{reminder.description}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <button 
                         onClick={() => toggleReminderComplete(reminder.id)}
-                        className={`p-1.5 rounded-full ${reminder.isCompleted ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'} hover:shadow-sm transition-all duration-200`}
+                        className={`p-1 sm:p-1.5 rounded-full ${reminder.isCompleted ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'} hover:shadow-sm transition-all duration-200`}
                       >
-                        <Check size={16} />
+                        <Check size={14} />
                       </button>
                       <button 
                         onClick={() => deleteReminder(reminder.id)}
-                        className="p-1.5 rounded-full bg-red-100 text-red-600 hover:shadow-sm transition-all duration-200"
+                        className="p-1 sm:p-1.5 rounded-full bg-red-100 text-red-600 hover:shadow-sm transition-all duration-200"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
@@ -722,16 +728,16 @@ const Schedule = () => {
               ))}
             </div>
           ) : (
-            <div className="card p-6 flex flex-col items-center justify-center text-center animate-fadeIn">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-2">
-                <Bell size={24} className="text-gray-400" />
+            <div className="card p-4 sm:p-6 flex flex-col items-center justify-center text-center animate-fadeIn">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center mb-2">
+                <Bell size={20} className="text-gray-400" />
               </div>
-              <p className="text-gray-500 mb-2">No reminders for this day</p>
+              <p className="text-sm sm:text-base text-gray-500 mb-2">No reminders for this day</p>
               <button 
                 onClick={() => setShowReminderModal(true)} 
-                className="text-primary font-medium flex items-center gap-1 hover:underline"
+                className="text-primary font-medium flex items-center gap-1 hover:underline text-sm sm:text-base"
               >
-                <Plus size={16} />
+                <Plus size={14} />
                 <span>Add a reminder</span>
               </button>
             </div>
@@ -741,56 +747,56 @@ const Schedule = () => {
       
       {Object.entries(medicationsByPeriod).map(([period, meds]) => (
   meds.length > 0 && (
-    <div key={period} className={`mb-6 rounded-xl shadow-lg overflow-hidden border-2 ${
+    <div key={period} className={`mb-4 sm:mb-6 rounded-xl shadow-lg overflow-hidden border-2 ${
       period === 'Morning' ? 'border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50' : 
       period === 'Afternoon' ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 
       'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50'
     }`}>
       {/* Enhanced Period Header */}
-      <div className={`p-4 flex items-center justify-between ${
+      <div className={`p-3 sm:p-4 flex items-center justify-between ${
         period === 'Morning' ? 'bg-gradient-to-r from-orange-400 to-yellow-400' : 
         period === 'Afternoon' ? 'bg-gradient-to-r from-blue-400 to-cyan-400' : 
         'bg-gradient-to-r from-indigo-500 to-purple-500'
       }`}>
         <div className="flex items-center">
-          <div className="mr-3 p-2 bg-white/20 rounded-full">
+          <div className="mr-2 sm:mr-3 p-1.5 sm:p-2 bg-white/20 rounded-full">
             {period === 'Morning' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3V4M12 20V21M4 12H3M5.5 5.5L6.5 6.5M18.5 5.5L17.5 6.5M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             )}
             {period === 'Afternoon' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3C12 3 8 6 8 12C8 18 12 21 12 21C12 21 16 18 16 12C16 6 12 3 12 3Z" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="12" cy="12" r="3" fill="currentColor"/>
               </svg>
             )}
             {period === 'Evening' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21.4 13.7001C20.6 13.9001 19.8 14.0001 19 14.0001C15.1 14.0001 12 10.9001 12 7.00006C12 5.40006 12.5 3.90006 13.3 2.70006C13.1 2.70006 12.9 2.70006 12.7 2.70006C7.5 2.60006 3.1 6.80006 3 12.0001C2.9 17.2001 7.1 21.6001 12.3 21.7001C16 21.7001 19.1 19.5001 20.6 16.4001C20.9 15.7001 21.1 14.9001 21.3 14.1001C21.3 14.0001 21.4 13.8001 21.4 13.7001Z" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             )}
           </div>
           <div>
-            <h2 className="font-bold text-white text-lg">{period}</h2>
-            <p className="text-white/80 text-sm">
+            <h2 className="font-bold text-white text-base sm:text-lg">{period}</h2>
+            <p className="text-white/80 text-xs sm:text-sm">
               {period === 'Morning' && '6:00 AM - 12:00 PM'}
               {period === 'Afternoon' && '12:00 PM - 6:00 PM'}
               {period === 'Evening' && '6:00 PM - 12:00 AM'}
             </p>
           </div>
         </div>
-        <div className="text-white/90 text-sm font-medium">
+        <div className="text-white/90 text-xs sm:text-sm font-medium">
           {meds.filter(med => med.taken).length}/{meds.length} taken
         </div>
       </div>
 
       {/* Medications List */}
-      <div className="p-3 space-y-3">
+      <div className="p-2 sm:p-3 space-y-2 sm:space-y-3">
         {meds.map((med, index) => (
           <div 
             key={index}
-            className={`bg-white rounded-xl p-4 shadow-md border-l-4 transition-all duration-200 hover:shadow-lg ${
+            className={`bg-white rounded-xl p-3 sm:p-4 shadow-md border-l-4 transition-all duration-200 hover:shadow-lg ${
               med.taken ? 'border-l-green-500 bg-green-50/50' :
               med.missed ? 'border-l-red-500 bg-red-50/50' :
               med.skipped ? 'border-l-yellow-500 bg-yellow-50/50' :
@@ -800,42 +806,39 @@ const Schedule = () => {
             onTouchEnd={handleTouchEndLongPress}
             onTouchCancel={handleTouchEndLongPress}
           >
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start justify-between mb-2 sm:mb-3">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2">
                   {/* Medication Icon */}
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center ${
                     med.type === 'tablet' ? 'bg-blue-100' :
                     med.type === 'capsule' ? 'bg-green-100' :
                     med.type === 'liquid' ? 'bg-purple-100' :
                     med.type === 'injection' ? 'bg-red-100' :
                     'bg-gray-100'
                   }`}>
-                    {/* Tablet Icon */}
+                    {/* Medication type icons remain the same */}
                     {(med.type === 'tablet' || !med.type) && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <ellipse cx="12" cy="12" rx="8" ry="6" fill="#3B82F6" stroke="#1E40AF" strokeWidth="2"/>
                         <line x1="12" y1="6" x2="12" y2="18" stroke="#1E40AF" strokeWidth="1"/>
                       </svg>
                     )}
-                    {/* Capsule Icon */}
                     {med.type === 'capsule' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="8" y="6" width="8" height="12" rx="4" fill="#10B981" stroke="#059669" strokeWidth="2"/>
                         <rect x="8" y="6" width="8" height="6" fill="#34D399"/>
                       </svg>
                     )}
-                    {/* Liquid Icon */}
                     {med.type === 'liquid' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7 3V6H17V3H7Z" fill="#8B5CF6" stroke="#7C3AED" strokeWidth="2"/>
                         <path d="M7 6H17V18C17 19.1046 16.1046 20 15 20H9C7.89543 20 7 19.1046 7 18V6Z" fill="#A78BFA" stroke="#7C3AED" strokeWidth="2"/>
                         <circle cx="12" cy="13" r="2" fill="#8B5CF6"/>
                       </svg>
                     )}
-                    {/* Injection Icon */}
                     {med.type === 'injection' && (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17 3L21 7L19 9L15 5L17 3Z" fill="#EF4444" stroke="#DC2626" strokeWidth="2"/>
                         <path d="M15 5L3 17V21H7L19 9L15 5Z" fill="#FCA5A5" stroke="#DC2626" strokeWidth="2"/>
                       </svg>
@@ -843,20 +846,20 @@ const Schedule = () => {
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 text-lg">{med.name}</h3>
-                    <p className="text-blue-600 font-semibold">{med.dosage}</p>
-                    <p className="text-gray-600 text-sm mt-1">{med.instruction}</p>
+                    <h3 className="font-bold text-gray-800 text-base sm:text-lg">{med.name}</h3>
+                    <p className="text-blue-600 font-semibold text-sm sm:text-base">{med.dosage}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-0.5 sm:mt-1">{med.instruction}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                   <div className="flex items-center gap-1 text-gray-500">
-                    <Clock size={14} />
+                    <Clock size={12} />
                     <span className="font-medium">{med.time}</span>
                   </div>
                   {med.withFood && (
                     <div className="flex items-center gap-1 text-amber-600">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" fill="currentColor"/>
                       </svg>
                       <span className="text-xs font-medium">With food</span>
@@ -866,22 +869,22 @@ const Schedule = () => {
               </div>
               
               {/* Status Indicator */}
-              <div className="ml-4">
+              <div className="ml-2 sm:ml-4">
                 {med.taken && (
-                  <div className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-green-100 text-green-800 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+                    <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-green-500 rounded-full"></div>
                     Taken
                   </div>
                 )}
                 {med.missed && (
-                  <div className="flex items-center gap-2 bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-red-100 text-red-800 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+                    <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-red-500 rounded-full"></div>
                     Missed
                   </div>
                 )}
                 {med.skipped && (
-                  <div className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+                    <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-yellow-500 rounded-full"></div>
                     <span>Skipped</span>
                     {med.skipReason && (
                       <span className="text-xs underline cursor-help" title={med.skipReason}>
@@ -891,8 +894,8 @@ const Schedule = () => {
                   </div>
                 )}
                 {!med.taken && !med.missed && !med.skipped && (
-                  <div className="flex items-center gap-2 bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-gray-100 text-gray-600 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+                    <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-gray-400 rounded-full animate-pulse"></div>
                     Pending
                   </div>
                 )}
@@ -900,54 +903,54 @@ const Schedule = () => {
             </div>
             
             {/* Action Buttons */}
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-1 sm:gap-2 mt-3 sm:mt-4">
               <button 
-                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl border-2 text-xs sm:text-sm font-semibold flex justify-center items-center gap-1 sm:gap-2 transition-all duration-200 ${
                   med.taken 
                     ? 'bg-green-500 text-white border-green-500 shadow-lg shadow-green-200' 
                     : 'bg-white text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300 hover:shadow-md'
                 }`}
                 onClick={() => handleStatusChange(med, 'taken')}
               >
-                <Check size={16} strokeWidth={2.5} />
+                <Check size={14} strokeWidth={2.5} />
                 Taken
               </button>
               
               <button 
-                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl border-2 text-xs sm:text-sm font-semibold flex justify-center items-center gap-1 sm:gap-2 transition-all duration-200 ${
                   med.missed 
                     ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-200' 
                     : 'bg-white text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 hover:shadow-md'
                 }`}
                 onClick={() => handleStatusChange(med, 'missed')}
               >
-                <CircleX size={16} strokeWidth={2.5} />
+                <CircleX size={14} strokeWidth={2.5} />
                 Missed
               </button>
               
               <button 
-                className={`flex-1 py-2.5 px-3 rounded-xl border-2 text-sm font-semibold flex justify-center items-center gap-2 transition-all duration-200 ${
+                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl border-2 text-xs sm:text-sm font-semibold flex justify-center items-center gap-1 sm:gap-2 transition-all duration-200 ${
                   med.skipped 
                     ? 'bg-yellow-500 text-white border-yellow-500 shadow-lg shadow-yellow-200' 
                     : 'bg-white text-yellow-600 border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md'
                 }`}
                 onClick={() => handleStatusChange(med, 'skipped')}
               >
-                <CircleAlert size={16} strokeWidth={2.5} />
+                <CircleAlert size={14} strokeWidth={2.5} />
                 Skip
               </button>
             </div>
             
             {/* Skip Reason Display */}
             {med.skipReason && (
-              <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-yellow-600 mt-0.5 flex-shrink-0">
+              <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="flex items-start gap-1 sm:gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-yellow-600 mt-0.5 flex-shrink-0">
                     <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <div>
-                    <p className="text-yellow-800 font-medium text-sm">Skip Reason:</p>
-                    <p className="text-yellow-700 text-sm">{med.skipReason}</p>
+                    <p className="text-yellow-800 font-medium text-xs sm:text-sm">Skip Reason:</p>
+                    <p className="text-yellow-700 text-xs sm:text-sm">{med.skipReason}</p>
                   </div>
                 </div>
               </div>
@@ -955,9 +958,9 @@ const Schedule = () => {
             
             {/* Progress Indicator */}
             {med.taken && (
-              <div className="mt-3 flex items-center gap-2 text-green-600">
-                <div className="flex-1 bg-green-100 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full w-full transition-all duration-500"></div>
+              <div className="mt-2 sm:mt-3 flex items-center gap-1 sm:gap-2 text-green-600">
+                <div className="flex-1 bg-green-100 rounded-full h-1.5 sm:h-2">
+                  <div className="bg-green-500 h-1.5 sm:h-2 rounded-full w-full transition-all duration-500"></div>
                 </div>
                 <span className="text-xs font-medium">Completed</span>
               </div>
@@ -967,17 +970,17 @@ const Schedule = () => {
       </div>
       
       {/* Period Summary */}
-      <div className={`p-3 border-t ${
+      <div className={`p-2 sm:p-3 border-t ${
         period === 'Morning' ? 'bg-orange-50 border-orange-100' : 
         period === 'Afternoon' ? 'bg-blue-50 border-blue-100' : 
         'bg-indigo-50 border-indigo-100'
       }`}>
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between text-xs sm:text-sm">
+          <div className="flex items-center gap-2 sm:gap-4">
             <span className="text-gray-600">
               Progress: <span className="font-semibold">{meds.filter(med => med.taken).length}/{meds.length}</span>
             </span>
-            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+            <div className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${
               meds.every(med => med.taken) ? 'bg-green-100 text-green-700' :
               meds.some(med => med.missed) ? 'bg-red-100 text-red-700' :
               'bg-yellow-100 text-yellow-700'
@@ -987,9 +990,9 @@ const Schedule = () => {
                'In progress'}
             </div>
           </div>
-          <div className="w-16 bg-gray-200 rounded-full h-2">
+          <div className="w-12 sm:w-16 bg-gray-200 rounded-full h-1.5 sm:h-2">
             <div 
-              className={`h-2 rounded-full transition-all duration-500 ${
+              className={`h-1.5 sm:h-2 rounded-full transition-all duration-500 ${
                 period === 'Morning' ? 'bg-orange-400' : 
                 period === 'Afternoon' ? 'bg-blue-400' : 
                 'bg-indigo-400'

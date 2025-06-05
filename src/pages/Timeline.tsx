@@ -336,30 +336,30 @@ const Timeline = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 max-w-4xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Smart Health Timeline
               </h1>
-              <p className="text-gray-600 mt-1">Your personalized health companion</p>
+              <p className="text-sm sm:text-base text-gray-600 mt-1">Your personalized health companion</p>
             </div>
-            <button className="p-3 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <Filter size={20} className="text-gray-600" />
+            <button className="p-2 sm:p-3 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <Filter size={18} className="text-gray-600" />
             </button>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
-                  <User className="text-white" size={24} />
+          <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-lg border border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+                  <User className="text-white" size={20} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-800">Today's Overview</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Today's Overview</h3>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {new Date().toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
@@ -370,15 +370,15 @@ const Timeline = () => {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-800">
+                <div className="text-xl sm:text-2xl font-bold text-gray-800">
                   {events.filter(e => e.status === 'completed').length}/{events.length}
                 </div>
-                <div className="text-sm text-gray-500">Tasks Complete</div>
+                <div className="text-xs sm:text-sm text-gray-500">Tasks Complete</div>
               </div>
             </div>
             
             {/* Filter Tabs */}
-            <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+            <div className="flex flex-wrap gap-1 sm:gap-2 p-1 bg-gray-100 rounded-lg sm:rounded-xl">
               {[
                 { key: 'all', label: 'All' },
                 { key: 'upcoming', label: 'Upcoming' },
@@ -390,9 +390,9 @@ const Timeline = () => {
                   className={getTabClass(tab.key)}
                   onClick={() => setFilter(tab.key as any)}
                 >
-                  <div className="flex items-center gap-2">
-                    <span>{tab.label}</span>
-                    <span className="bg-white/20 rounded-full px-2 py-1 text-xs">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <span className="text-xs sm:text-sm">{tab.label}</span>
+                    <span className="bg-white/20 rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs">
                       {getEventCount(tab.key)}
                     </span>
                   </div>
@@ -403,23 +403,23 @@ const Timeline = () => {
         </div>
         
         {/* Legend */}
-        <div className="mb-6 flex items-center justify-between bg-white rounded-xl p-4 shadow-sm">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-red-500 to-pink-500 animate-pulse-slow"></div>
-              <span className="text-sm text-gray-600 font-medium">Medications</span>
+        <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 sm:gap-0 bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-r from-red-500 to-pink-500 animate-pulse-slow"></div>
+              <span className="text-xs sm:text-sm text-gray-600 font-medium">Medications</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 animate-pulse-slow"></div>
-              <span className="text-sm text-gray-600 font-medium">Appointments</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 animate-pulse-slow"></div>
+              <span className="text-xs sm:text-sm text-gray-600 font-medium">Appointments</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse-slow"></div>
-              <span className="text-sm text-gray-600 font-medium">Monitoring</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse-slow"></div>
+              <span className="text-xs sm:text-sm text-gray-600 font-medium">Monitoring</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Clock size={16} />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500">
+            <Clock size={14} />
             <span className="font-medium">
               {currentTime.toLocaleTimeString('en-US', { 
                 hour: '2-digit', 
@@ -432,45 +432,45 @@ const Timeline = () => {
         {/* Timeline */}
         <div className="relative" ref={timelineRef}>
           {/* Timeline track */}
-          <div className="absolute left-6 w-1 bg-gradient-to-b from-blue-200 via-indigo-200 to-purple-200 rounded-full" 
+          <div className="absolute left-4 sm:left-6 w-0.5 sm:w-1 bg-gradient-to-b from-blue-200 via-indigo-200 to-purple-200 rounded-full" 
                style={{ top: 0, bottom: 0, zIndex: 0 }}>
           </div>
           
           {/* Current time indicator */}
           <div 
-            className="absolute left-4 w-5 h-5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full z-10 shadow-lg border-2 border-white"
+            className="absolute left-2 sm:left-4 w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full z-10 shadow-lg border-2 border-white"
             style={{ 
               top: `${timelineProgress()}%`,
               transition: 'top 1s linear'
             }}
           >
-            <div className="absolute w-8 h-8 bg-blue-400/30 rounded-full -left-1.5 -top-1.5 animate-ping"></div>
-            <div className="absolute w-6 h-6 bg-blue-500/50 rounded-full -left-0.5 -top-0.5 animate-pulse"></div>
+            <div className="absolute w-6 h-6 sm:w-8 sm:h-8 bg-blue-400/30 rounded-full -left-1 -top-1 sm:-left-1.5 sm:-top-1.5 animate-ping"></div>
+            <div className="absolute w-4 h-4 sm:w-6 sm:h-6 bg-blue-500/50 rounded-full -left-0.5 -top-0.5 animate-pulse"></div>
           </div>
           
           {events.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center animate-bounce-gentle">
-                <Clock size={32} className="opacity-50" />
+            <div className="text-center py-8 sm:py-12 text-gray-400">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gray-100 rounded-full flex items-center justify-center animate-bounce-gentle">
+                <Clock size={24} className="opacity-50" />
               </div>
-              <p className="text-lg font-medium">Loading your timeline...</p>
-              <div className="w-32 h-2 mx-auto mt-4 bg-gray-200 rounded-full overflow-hidden">
+              <p className="text-base sm:text-lg font-medium">Loading your timeline...</p>
+              <div className="w-24 sm:w-32 h-1.5 sm:h-2 mx-auto mt-3 sm:mt-4 bg-gray-200 rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-blue-400 to-indigo-400 shimmer"></div>
               </div>
             </div>
           ) : sortedEvents.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 bg-white rounded-2xl shadow-sm">
-              <Calendar size={48} className="mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">No events match your filter</p>
+            <div className="text-center py-8 sm:py-12 text-gray-500 bg-white rounded-xl sm:rounded-2xl shadow-sm">
+              <Calendar size={36} className="mx-auto mb-3 sm:mb-4 opacity-50" />
+              <p className="text-base sm:text-lg font-medium mb-2">No events match your filter</p>
               <button 
                 onClick={() => setFilter('all')}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
                 View all events
               </button>
             </div>
           ) : (
-            <div className="space-y-6 pb-28">
+            <div className="space-y-4 sm:space-y-6 pb-20 sm:pb-28">
               {sortedEvents.map((event, index) => {
                 const categoryDetails = getCategoryDetails(event.category);
                 const statusDetails = getStatusDetails(event.status);
@@ -480,16 +480,16 @@ const Timeline = () => {
                 return (
                   <div 
                     key={event.id}
-                    className={`flex items-start gap-6 animate-slideInUp card-hover ${isAnimating ? 'scale-105' : ''}`}
+                    className={`flex items-start gap-3 sm:gap-6 animate-slideInUp card-hover ${isAnimating ? 'scale-105' : ''}`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     {/* Timeline dot */}
                     <div className="relative mt-2">
-                      <div className={`w-4 h-4 rounded-full ${categoryDetails.color} timeline-dot shadow-lg`}>
+                      <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${categoryDetails.color} timeline-dot shadow-lg`}>
                         {event.status === 'upcoming' && (
                           <>
-                            <div className={`absolute w-8 h-8 ${categoryDetails.color} rounded-full -left-2 -top-2 opacity-20 animate-ping`}></div>
-                            <div className={`absolute w-6 h-6 ${categoryDetails.color} rounded-full -left-1 -top-1 opacity-40 animate-pulse`}></div>
+                            <div className={`absolute w-6 h-6 sm:w-8 sm:h-8 ${categoryDetails.color} rounded-full -left-1.5 -top-1.5 sm:-left-2 sm:-top-2 opacity-20 animate-ping`}></div>
+                            <div className={`absolute w-4 h-4 sm:w-6 sm:h-6 ${categoryDetails.color} rounded-full -left-0.5 -top-0.5 sm:-left-1 sm:-top-1 opacity-40 animate-pulse`}></div>
                           </>
                         )}
                       </div>
@@ -497,66 +497,66 @@ const Timeline = () => {
                     
                     {/* Event Card */}
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Clock size={14} className="text-gray-400" />
-                        <span className="text-sm font-medium text-gray-500">{event.time}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                        <Clock size={12} className="text-gray-400" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-500">{event.time}</span>
                         {priorityDetails && (
                            <div className={`flex items-center gap-1 ${priorityDetails.color}`}>
                              {priorityDetails.icon}
-                             <span className="text-xs">{priorityDetails.label}</span>
+                             <span className="text-[10px] sm:text-xs">{priorityDetails.label}</span>
                            </div>
                          )}
                       </div>
                       
-                      <div className={`bg-white rounded-2xl p-5 border-l-4 ${categoryDetails.borderColor} ${categoryDetails.shadowColor} shadow-lg card-hover ${isAnimating ? 'shimmer' : ''}`}>
-                        <div className="flex items-start justify-between mb-3">
+                      <div className={`bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 border-l-4 ${categoryDetails.borderColor} ${categoryDetails.shadowColor} shadow-lg card-hover ${isAnimating ? 'shimmer' : ''}`}>
+                        <div className="flex items-start justify-between mb-2 sm:mb-3">
                           <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`p-2 rounded-xl ${categoryDetails.lightColor} ${categoryDetails.textColor}`}>
+                            <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                              <div className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl ${categoryDetails.lightColor} ${categoryDetails.textColor}`}>
                                 {categoryDetails.icon}
                               </div>
                               <div>
-                                <h3 className="font-bold text-gray-800 text-lg">{event.title}</h3>
-                                <p className="text-gray-600 text-sm mt-1">{event.description}</p>
+                                <h3 className="font-bold text-gray-800 text-base sm:text-lg">{event.title}</h3>
+                                <p className="text-gray-600 text-xs sm:text-sm mt-0.5 sm:mt-1">{event.description}</p>
                               </div>
                             </div>
                           </div>
                           
-                          <div className={`px-3 py-1 rounded-full ${statusDetails.color} ${statusDetails.pulse ? 'animate-pulse-slow' : ''}`}>
+                          <div className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${statusDetails.color} ${statusDetails.pulse ? 'animate-pulse-slow' : ''}`}>
                             <div className="flex items-center gap-1">
                               {statusDetails.icon}
-                              <span className="text-xs font-medium">{statusDetails.label}</span>
+                              <span className="text-[10px] sm:text-xs font-medium">{statusDetails.label}</span>
                             </div>
                           </div>
                         </div>
                         
                         {/* Action buttons */}
                         {event.status === 'upcoming' && (
-                          <div className="flex gap-3 mt-4">
+                          <div className="flex gap-2 sm:gap-3 mt-3 sm:mt-4">
                             <button 
-                              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                              className="flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs sm:text-sm"
                               onClick={() => handleStatusChange(event.id, 'completed')}
                             >
-                              <div className="flex items-center justify-center gap-2">
-                                <Check size={16} />
+                              <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                <Check size={14} />
                                 Complete
                               </div>
                             </button>
                             <button 
-                              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                              className="flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs sm:text-sm"
                               onClick={() => handleStatusChange(event.id, 'snoozed')}
                             >
-                              <div className="flex items-center justify-center gap-2">
-                                <RefreshCw size={16} />
+                              <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                <RefreshCw size={14} />
                                 Snooze
                               </div>
                             </button>
                             <button 
-                              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105"
+                              className="flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs sm:text-sm"
                               onClick={() => handleStatusChange(event.id, 'missed')}
                             >
-                              <div className="flex items-center justify-center gap-2">
-                                <X size={16} />
+                              <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                <X size={14} />
                                 Skip
                               </div>
                             </button>
@@ -573,53 +573,53 @@ const Timeline = () => {
 
         {/* Smart Ring Preview */}
         {showRingPreview && (
-          <div className="fixed bottom-6 left-4 right-4 bg-white rounded-2xl p-6 shadow-2xl border border-gray-100 z-30 animate-slideInUp">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                  <Bell size={16} className="text-white" />
+          <div className="fixed bottom-4 sm:bottom-6 left-2 sm:left-4 right-2 sm:right-4 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-2xl border border-gray-100 z-30 animate-slideInUp">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                  <Bell size={14} className="text-white" />
                 </div>
-                <h3 className="font-bold text-lg text-gray-800">Smart Device Integration</h3>
+                <h3 className="font-bold text-base sm:text-lg text-gray-800">Smart Device Integration</h3>
               </div>
               <button 
-                className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+                className="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
                 onClick={() => setShowRingPreview(false)}
               >
-                <X size={20} className="text-gray-400" />
+                <X size={16} className="text-gray-400" />
               </button>
             </div>
             
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="relative">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-2xl">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-inner">
-                    <div className="w-8 h-8 rounded-full relative overflow-hidden">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-2xl">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-inner">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse opacity-0" style={{ animationDelay: '2s', animationDuration: '3s' }}></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-pulse opacity-0" style={{ animationDelay: '4s', animationDuration: '3s' }}></div>
                     </div>
                   </div>
                 </div>
-                <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 animate-bounce"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 animate-bounce"></div>
               </div>
               
               <div className="flex-1">
-                <h4 className="font-bold text-gray-800 mb-2">Seamless Health Monitoring</h4>
-                <p className="text-gray-600 text-sm mb-3">
+                <h4 className="font-bold text-gray-800 text-sm sm:text-base mb-1 sm:mb-2">Seamless Health Monitoring</h4>
+                <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3">
                   Get gentle vibrations and color-coded LED alerts directly on your smart ring for all health tasks
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full">
-                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-500 to-pink-500"></div>
-                    <span className="text-xs font-medium text-red-600">Medications</span>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-red-50 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-red-500 to-pink-500"></div>
+                    <span className="text-[10px] sm:text-xs font-medium text-red-600">Medications</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
-                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-                    <span className="text-xs font-medium text-blue-600">Appointments</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-blue-50 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+                    <span className="text-[10px] sm:text-xs font-medium text-blue-600">Appointments</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full">
-                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500"></div>
-                    <span className="text-xs font-medium text-green-600">Monitoring</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-green-50 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                    <span className="text-[10px] sm:text-xs font-medium text-green-600">Monitoring</span>
                   </div>
                 </div>
               </div>
